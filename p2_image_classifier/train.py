@@ -1,13 +1,9 @@
 import argparse
-from helper_functions import get_dataloaders, get_model, train_model, test_model
-
 import torch
-
-
 import time
-import numpy as np
+#import numpy as np
 
-from PIL import Image
+from helper_functions import get_dataloaders, get_model, train_model, test_model
 
 parser = argparse.ArgumentParser(description='Trainer for Image Classifier project.')
 
@@ -131,7 +127,7 @@ for e in range(epochs):
     test_model(validloader, model, device)
     print(f"[Time: {(time.time() - validation_start)/60:.2f} mins]", end="")
 
-# Save the model for later used
+# Save the model for later use
 print()
 print("Trying to save the trained model...")
 

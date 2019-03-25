@@ -2,9 +2,6 @@ import torch
 from torch import nn, optim
 from torchvision import transforms, datasets, models
 
-#import time
-#import numpy as np
-
 from PIL import Image
 
 def get_dataloaders(data_dir):
@@ -147,3 +144,86 @@ def test_model(testloader, model, device):
 
     print(f"Testing loss: {testing_loss/len(testloader):.3f}", end=" ")
     print(f"Accuracy: {accuracy/len(testloader):.3f}", end=" ")
+
+    # Write a function that loads a checkpoint and rebuilds the model
+def load_checkpoint(filepath):
+    # Load the checkpoint
+    checkpoint = torch.load(filepath, map_location={'cuda:0': 'cpu'})
+
+    # Retrieve the params from the model
+    architecture = checkpoint['architecture']
+
+    # Recreate the model
+    model = None
+    input_units = 0
+
+    if architecture == "alexnet":
+        model = models.alexnet(pretrained = True)
+        input_units = 9216
+    elif architecture == "vgg19":
+        model = models.vgg19(pretrained = True)
+        input_units = 25088
+    elif architecture == "densenet121":
+        model = models.densenet121(pretrained = True)
+        input_units = 1024
+
+    hidden_units = checkpoint['hidden_units']
+
+    # Set up the Classifier
+    classifier = nn.Sequential(nn.Linear(input_units, hidden_units),
+                            nn.ReLU(),
+                            nn.Dropout(p=0.2),
+                            nn.Linear(hidden_units, 102),
+                            nn.LogSoftmax(dim=1))
+    model.classifier = classifier
+
+    # load the remaining items from the checkpoint and attach to the model
+    model.load_state_dict(checkpoint['model_state_dict'], strict = False)
+    model.class_to_idx = checkpoint['class_to_idx']
+
+    #print(f">architecture:{architecture}")
+
+    # Disable backprogagation on model parameters
+    for param in model.parameters():
+        param.requires_grad = False
+
+    return model
+
+def process_image(image_path):
+
+    # load the image from the file system
+    single_image = Image.open(image_path)
+
+    # define the transformations to be applied on the input image
+    image_transforms = transforms.Compose([transforms.Resize(256),
+                                       transforms.CenterCrop(224),
+                                       transforms.ToTensor(),
+                                       transforms.Normalize([0.485, 0.456, 0.406],
+                                                            [0.229, 0.224, 0.225])])
+
+    # apply the transforms to produce an image tensor
+    image_tensor = image_transforms(single_image)
+
+    return image_tensor
+
+
+def predict(image_path, model, topk):
+
+    # process the image and get the image tensor
+    image = process_image(image_path)
+
+    # add and additional dim before passing to the model
+    image = image.unsqueeze_(0)
+    image = image.float()
+
+    # change the model to evaluation mode and move to CPU
+    model.eval()
+    #model.to('cpu')
+
+    # make a forward pass of the model and compute the top probablities, classes
+    with torch.no_grad():
+        log_ps = model.forward(image)
+
+    ps = torch.exp(log_ps)
+
+    return ps.topk(topk, dim=1)
