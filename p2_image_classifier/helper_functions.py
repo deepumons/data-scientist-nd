@@ -2,8 +2,8 @@ import torch
 from torch import nn, optim
 from torchvision import transforms, datasets, models
 
-import time
-import numpy as np
+#import time
+#import numpy as np
 
 from PIL import Image
 
@@ -44,22 +44,20 @@ def get_dataloaders(data_dir):
     testloader = torch.utils.data.DataLoader(test_data, batch_size=50)
     validloader = torch.utils.data.DataLoader(valid_data, batch_size=50)
 
-    return trainloader, testloader, validloader
+    class_to_idx = train_data.class_to_idx
 
-def get_model(architecture, hidden_units, learning_rate):
+    return trainloader, testloader, validloader, class_to_idx
+
+def get_model(architecture, input_units, hidden_units, learning_rate):
 
     model = None
-    input_units = 25088
 
     if architecture == "alexnet":
-        model = models.AlexNet(pretrained = True)
-        input_units = 9216
+        model = models.alexnet(pretrained = True)
     elif architecture == "vgg19":
         model = models.vgg19(pretrained = True)
-        input_units = 25088
     elif architecture == "densenet121":
         model = models.densenet121(pretrained = True)
-        input_units = 1024
     else:
         model = None
 
@@ -78,11 +76,21 @@ def get_model(architecture, hidden_units, learning_rate):
     return model
 
 # Definition for the training function
-def train_model(trainloader, model, criterion, optimizer):
+def train_model(trainloader, model, learning_rate, device):
+
     # Channge model to train mode
     model.train()
 
     training_loss = 0
+
+    # Define the loss function
+    criterion = nn.NLLLoss()
+
+    # Only train the classifier parameters, feature parameters are frozen
+    optimizer = optim.Adam(model.classifier.parameters(), lr=learning_rate)
+
+    # move the model to the default device
+    model.to(device);
 
     for i, (inputs, labels) in enumerate(trainloader):
 
@@ -106,10 +114,13 @@ def train_model(trainloader, model, criterion, optimizer):
     print(f"Training loss: {training_loss/len(trainloader):.3f}", end=" ")
 
 # Define the testing function
-def test_model(testloader, model, criterion):
+def test_model(testloader, model, device):
 
     # Change model to evaluation mode
     model.eval()
+
+    # Define the loss function
+    criterion = nn.NLLLoss()
 
     testing_loss = 0
     accuracy = 0
