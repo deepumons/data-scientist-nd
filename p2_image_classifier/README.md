@@ -1,13 +1,13 @@
 # Data Scientist Nanodegree
 # Deep Learning
-## Project: Image Classifier Project
+## Project: Image Classifier
 
 ### Install
 
 This project requires **Python 3.x** and the following Python libraries installed:
 
 - [NumPy](http://www.numpy.org/)
-- [PyTorch] (https://pytorch.org/get-started/locally/)
+- [PyTorch](https://pytorch.org/get-started/locally/)
 
 You will also need to have software installed to run and execute an [iPython Notebook](http://ipython.org/notebook.html)
 
@@ -24,7 +24,7 @@ This code is then ported to a console application with the help of python script
 
 ### Data
 
-The project uses the training, testing, and validation image datasets of the [102 Category Flower Dataset] (http://www.robots.ox.ac.uk/~vgg/data/flowers/102/index.html) by the Visual Geometry Group.
+The project uses the training, testing, and validation image datasets of the [102 Category Flower Dataset](http://www.robots.ox.ac.uk/~vgg/data/flowers/102/index.html) by the Visual Geometry Group.
 
 The images should be extracted to a /flowers local folder in the same directory as the jupyter notebook and python script files in order for them to work.
 
