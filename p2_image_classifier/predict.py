@@ -68,8 +68,8 @@ print("Trying to load the trained model from the checkpoint...")
 model = load_checkpoint(checkpoint)
 print("Successfully loaded the model from the checkpoint.")
 
-# The following code executes if testing is requierd
-do_test = True
+# The following code can be executed if testing is requierd
+do_test = False
 if (do_test):
     # Load the test data
     print("Preparing data loaders...")
@@ -89,8 +89,8 @@ test_image_name = cat_to_name[test_image_index]
 print(f"The flower image supplied by you is: {test_image_name}")
 
 probs, classes = predict(path_to_image, model, top_k)
-print(probs)
-print(classes)
+#print(probs)
+#print(classes)
 
 # Print the top classes
 top_classes = np.array(classes)[0]
@@ -108,5 +108,5 @@ flower_names = list()
 for i in top_classes:
     flower_names.append(cat_to_name[str(idx_to_class[i])])
 
-print(f"Top {top_k} predictions for this image (in decreasing order) are: ")
+print(f"Top {top_k} predictions for this image (in decreasing order of probablity) are: ")
 print(flower_names)
