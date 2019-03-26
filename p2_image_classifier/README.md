@@ -7,7 +7,7 @@
 This project requires **Python 3.x** and the following Python libraries installed:
 
 - [NumPy](http://www.numpy.org/)
-- [PyTorch] (https://pytorch.org/get-started/locally/)
+- [PyTorch] https://pytorch.org/get-started/locally/)
 
 You will also need to have software installed to run and execute an [iPython Notebook](http://ipython.org/notebook.html)
 
@@ -17,7 +17,7 @@ We recommend students install [Anaconda](https://www.continuum.io/downloads), a 
 
 The jupyter notebook named `Image Classifier Project.ipynb` has the step-by-step working code used to implement a deep neuaral network. Executing the cells in this notebook file in a top-down fashing should yield the expected result of training a neural network, and then using the same network to make predictions on new images.
 
-This code is then adapted to two python scripts to does the same operations as a console application. The file structure is listed below:
+This code is then ported to a console application with the help of python scripts that does the same operations in the jupyter notebook version. The details of these python scripts are listed below:
 - train.py Can be be used to train the neural network using one of the pre-trained models.
 - predict.py Once training is completed a checkpoint file is generated in the same folder. This can be supplied to predict.py along with a test image to make predictions on that image.
 - helper_functions.py This file contains several utility, and dependent functions that is referenced by both train.py and predict.py and must be present in the same folder.
@@ -30,7 +30,7 @@ These images should be extracted to a /flowers local folder in the same director
 
 ### Run
 
-In a terminal or command window, navigate to the top-level project directory `finding_donors/` (that contains this README) and run one of the following commands:
+In a terminal or command window, navigate to the top-level project directory (that contains this README) and run one of the following commands:
 
 ```bash
 ipython notebook Image Classifier Project.ipynb
